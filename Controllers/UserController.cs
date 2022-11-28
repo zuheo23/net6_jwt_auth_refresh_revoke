@@ -90,6 +90,8 @@ namespace Emperor.WebApi.Controllers
         {
             (string? token, string? refreshToken, var user) = await _userService.Authenticate(userX.Email, userX.Password);
 
+            if (user == null) {return Unauthorized();}
+
             //System.Diagnostics.Debug.WriteLine($"UserController: {token}");
             user.RefreshToken = refreshToken;
             user.RefreshTokenExpiryTime = DateTime.Now.AddDays(7);
@@ -119,7 +121,7 @@ namespace Emperor.WebApi.Controllers
 
             await _userService.UpdateAsync(user.Id!, user);
 
-            return Ok(new TokenApiModel{ AccessToken = newAccessToken, RefreshToken = refreshToken });
+            return Ok(new TokenApiModel{ AccessToken = newAccessToken, RefreshToken = newRefreshToken });
 
          }
 
